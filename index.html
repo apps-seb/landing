@@ -73,10 +73,17 @@
             text-decoration: none;
         }
 
-        img {
+        img,
+        video {
             display: block;
             max-width: 100%;
             border-radius: var(--radius-sm);
+        }
+
+        video {
+            width: 100%;
+            height: auto;
+            background: rgba(2, 6, 23, 0.65);
         }
 
         .bg-orb {
@@ -119,9 +126,40 @@
             position: sticky;
             top: 0;
             z-index: 999;
-            backdrop-filter: blur(18px);
-            background: rgba(6, 11, 23, 0.82);
-            border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+            backdrop-filter: blur(22px) saturate(140%);
+            background: linear-gradient(120deg, rgba(6, 11, 23, 0.68), rgba(30, 41, 59, 0.32));
+            border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+            box-shadow: 0 22px 40px rgba(2, 6, 23, 0.38);
+            transition: transform 0.45s ease, opacity 0.35s ease, background 0.4s ease, box-shadow 0.4s ease;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 20% -40%, rgba(99, 102, 241, 0.28), transparent 55%),
+                radial-gradient(circle at 80% -60%, rgba(236, 72, 153, 0.22), transparent 60%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        header.header-scrolled::before {
+            opacity: 1;
+        }
+
+        .header-hidden {
+            transform: translateY(-110%);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        header.header-scrolled {
+            background: linear-gradient(135deg, rgba(6, 11, 23, 0.82), rgba(30, 58, 138, 0.35));
+            box-shadow: 0 28px 55px rgba(2, 6, 23, 0.45);
+            border-bottom-color: rgba(148, 163, 184, 0.22);
         }
 
         .nav {
@@ -536,10 +574,12 @@
             position: relative;
         }
 
-        .hero-preview img {
+        .hero-preview img,
+        .hero-preview video {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            border-radius: inherit;
         }
 
         .upload-drop {
@@ -728,7 +768,8 @@
             grid-template-rows: auto 1fr;
         }
 
-        .media-card img {
+        .media-card img,
+        .media-card video {
             min-height: 200px;
             object-fit: cover;
         }
@@ -1184,12 +1225,12 @@
                 </div>
                 <div class="hero-media reveal" data-animate="slide-left" id="demo">
                     <div class="hero-preview" id="heroPreview">
-                        <span style="color: rgba(148,163,184,0.8); font-size:0.9rem; text-align:center; padding:1.5rem;">Sube una captura de tu app o deja que mostremos la demo.</span>
+                        <span style="color: rgba(148,163,184,0.8); font-size:0.9rem; text-align:center; padding:1.5rem;">Sube una captura o video de tu app o deja que mostremos la demo.</span>
                     </div>
                     <label class="upload-drop" for="heroUpload">
-                        Arrastra y suelta o selecciona una imagen para personalizar tu hero.
+                        Arrastra y suelta o selecciona una imagen o video para personalizar tu hero.
                     </label>
-                    <input type="file" id="heroUpload" accept="image/*" hidden data-target="heroPreview" />
+                    <input type="file" id="heroUpload" accept="image/*,video/*" hidden data-target="heroPreview" />
                     <div class="strip">
                         <div>
                             <strong>Confían en FitTrack Pro</strong>
@@ -1357,8 +1398,8 @@
                         </span>
                         <h3>Seguimiento de comidas</h3>
                         <p>Registro visual de macros, recordatorios automáticos, recetas sugeridas y análisis de adherencia por semana.</p>
-                        <label class="upload-drop" for="seguimientoUpload">Personaliza con tu captura de dashboard</label>
-                        <input type="file" id="seguimientoUpload" accept="image/*" hidden data-target="seguimientoImg" />
+                        <label class="upload-drop" for="seguimientoUpload">Personaliza con tu captura o video del dashboard</label>
+                        <input type="file" id="seguimientoUpload" accept="image/*,video/*" hidden data-target="seguimientoImg" />
                     </div>
                 </div>
                 <div class="media-card reveal" data-animate="slide-up">
@@ -1381,8 +1422,8 @@
                         </span>
                         <h3>Rutinas personalizadas y probadas</h3>
                         <p>Combina bloques de entrenamiento probados con ajustes dinámicos según progreso, feedback y tiempo disponible.</p>
-                        <label class="upload-drop" for="rutinasUpload">Sube un mockup de tu rutina</label>
-                        <input type="file" id="rutinasUpload" accept="image/*" hidden data-target="rutinasImg" />
+                        <label class="upload-drop" for="rutinasUpload">Sube un mockup o video de tu rutina</label>
+                        <input type="file" id="rutinasUpload" accept="image/*,video/*" hidden data-target="rutinasImg" />
                     </div>
                 </div>
                 <div class="media-card reveal" data-animate="slide-up">
@@ -1405,8 +1446,8 @@
                         </span>
                         <h3>Panel especial para coach</h3>
                         <p>Agenda inteligente, check-ins automatizados, notas de voz, marketing integrado y upsells a un clic.</p>
-                        <label class="upload-drop" for="coachUpload">Muestra tu panel de coach</label>
-                        <input type="file" id="coachUpload" accept="image/*" hidden data-target="coachImg" />
+                        <label class="upload-drop" for="coachUpload">Muestra tu panel de coach en imagen o video</label>
+                        <input type="file" id="coachUpload" accept="image/*,video/*" hidden data-target="coachImg" />
                     </div>
                 </div>
             </div>
@@ -1965,8 +2006,8 @@
                         </span>
                         <h3>Equipo de coaches certificados</h3>
                         <p>Destaca la calidad humana de tu equipo con fotografías profesionales y mensajes inspiradores.</p>
-                        <label class="upload-drop" for="galeriaUpload1">Sube tu fotografía</label>
-                        <input type="file" id="galeriaUpload1" accept="image/*" hidden data-target="galeria1" />
+                        <label class="upload-drop" for="galeriaUpload1">Sube tu fotografía o video</label>
+                        <input type="file" id="galeriaUpload1" accept="image/*,video/*" hidden data-target="galeria1" />
                     </div>
                 </div>
                 <div class="media-card reveal" data-animate="slide-up">
@@ -1989,8 +2030,8 @@
                         </span>
                         <h3>Recetas irresistibles</h3>
                         <p>Comparte contenido culinario para reforzar la adherencia y crear conexión emocional.</p>
-                        <label class="upload-drop" for="galeriaUpload2">Actualizar imagen</label>
-                        <input type="file" id="galeriaUpload2" accept="image/*" hidden data-target="galeria2" />
+                        <label class="upload-drop" for="galeriaUpload2">Actualizar imagen o video</label>
+                        <input type="file" id="galeriaUpload2" accept="image/*,video/*" hidden data-target="galeria2" />
                     </div>
                 </div>
                 <div class="media-card reveal" data-animate="slide-up">
@@ -2013,8 +2054,8 @@
                         </span>
                         <h3>Comunidad activa & eventos</h3>
                         <p>Promueve tus retos, eventos híbridos y meetups para aumentar retención.</p>
-                        <label class="upload-drop" for="galeriaUpload3">Cambiar fotografía</label>
-                        <input type="file" id="galeriaUpload3" accept="image/*" hidden data-target="galeria3" />
+                        <label class="upload-drop" for="galeriaUpload3">Cambiar fotografía o video</label>
+                        <input type="file" id="galeriaUpload3" accept="image/*,video/*" hidden data-target="galeria3" />
                     </div>
                 </div>
             </div>
@@ -2214,23 +2255,137 @@
             });
         }
 
+        const siteHeader = document.querySelector('header');
+        let lastScrollY = window.scrollY;
+        let scrollTicking = false;
+
+        const updateHeaderState = () => {
+            if (!siteHeader) {
+                scrollTicking = false;
+                return;
+            }
+            const currentY = window.scrollY;
+            if (currentY > 12) {
+                siteHeader.classList.add('header-scrolled');
+            } else {
+                siteHeader.classList.remove('header-scrolled');
+            }
+
+            if (currentY > lastScrollY + 10 && currentY > 120) {
+                siteHeader.classList.add('header-hidden');
+            } else if (currentY < lastScrollY - 10 || currentY <= 120) {
+                siteHeader.classList.remove('header-hidden');
+            }
+
+            lastScrollY = currentY;
+            scrollTicking = false;
+        };
+
+        window.addEventListener('scroll', () => {
+            if (scrollTicking) return;
+            scrollTicking = true;
+            requestAnimationFrame(updateHeaderState);
+        });
+
+        updateHeaderState();
+
+        function ensureMediaMetadata(element) {
+            if (!element.dataset.mediaAlt) {
+                const altAttr = element.getAttribute?.('alt');
+                element.dataset.mediaAlt = altAttr || 'Vista personalizada';
+            }
+            if (!element.dataset.mediaClass) {
+                element.dataset.mediaClass = element.className || '';
+            }
+        }
+
+        function buildMediaElement(reference, type, src, altFallback = 'Vista personalizada') {
+            const isVideo = type === 'video';
+            const element = isVideo ? document.createElement('video') : document.createElement('img');
+            const isMediaTag = reference.tagName && ['IMG', 'VIDEO'].includes(reference.tagName);
+            const storedClass = isMediaTag ? (reference.dataset?.mediaClass || reference.className || '') : '';
+            const storedAlt = reference.dataset?.mediaAlt || altFallback;
+
+            if (isMediaTag) {
+                element.id = reference.id;
+            }
+
+            if (storedClass) {
+                element.className = storedClass;
+            }
+
+            element.dataset.mediaClass = storedClass;
+            element.dataset.mediaAlt = storedAlt;
+
+            if (isVideo) {
+                element.src = src;
+                element.muted = true;
+                element.loop = true;
+                element.autoplay = true;
+                element.controls = true;
+                element.playsInline = true;
+            } else {
+                element.src = src;
+                element.alt = storedAlt;
+            }
+
+            return element;
+        }
+
         function handlePreviewUpload(input) {
             const file = input.files?.[0];
             if (!file) return;
             const targetId = input.dataset.target;
             if (!targetId) return;
+            if (!file.type) return;
+
+            const isImage = file.type.startsWith('image/');
+            const isVideo = file.type.startsWith('video/');
+            if (!isImage && !isVideo) return;
+
+            const target = document.getElementById(targetId);
+            if (!target) return;
+
             const reader = new FileReader();
             reader.onload = e => {
-                const target = document.getElementById(targetId);
-                if (!target) return;
-                if (target.tagName.toLowerCase() === 'img') {
-                    target.src = e.target?.result;
+                const result = e.target?.result;
+                if (!result) return;
+
+                const targetTag = target.tagName.toLowerCase();
+
+                if (targetTag === 'img' || targetTag === 'video') {
+                    ensureMediaMetadata(target);
+
+                    if (isImage) {
+                        if (targetTag === 'img') {
+                            target.src = result;
+                        } else {
+                            const replacement = buildMediaElement(target, 'image', result);
+                            target.replaceWith(replacement);
+                        }
+                    } else if (isVideo) {
+                        let videoElement;
+                        if (targetTag === 'video') {
+                            videoElement = target;
+                            videoElement.src = result;
+                        } else {
+                            const replacement = buildMediaElement(target, 'video', result);
+                            target.replaceWith(replacement);
+                            videoElement = replacement;
+                        }
+                        requestAnimationFrame(() => videoElement.play().catch(() => {}));
+                    }
                 } else {
+                    const altText = input.dataset.alt || 'Vista personalizada';
                     target.innerHTML = '';
-                    const img = document.createElement('img');
-                    img.src = e.target?.result;
-                    img.alt = 'Vista personalizada';
-                    target.appendChild(img);
+                    const mediaElement = buildMediaElement(target, isVideo ? 'video' : 'image', result, altText);
+                    if (!['IMG', 'VIDEO'].includes(target.tagName)) {
+                        mediaElement.removeAttribute('id');
+                    }
+                    target.appendChild(mediaElement);
+                    if (isVideo) {
+                        requestAnimationFrame(() => mediaElement.play().catch(() => {}));
+                    }
                 }
             };
             reader.readAsDataURL(file);
@@ -2259,25 +2414,6 @@
                 item.classList.toggle('active');
             });
         });
-
-        const heroUpload = document.getElementById('heroUpload');
-        if (heroUpload) {
-            heroUpload.addEventListener('change', function () {
-                const file = this.files?.[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = e => {
-                    const preview = document.getElementById('heroPreview');
-                    if (!preview) return;
-                    preview.innerHTML = '';
-                    const img = document.createElement('img');
-                    img.src = e.target?.result;
-                    img.alt = 'Hero personalizado';
-                    preview.appendChild(img);
-                };
-                reader.readAsDataURL(file);
-            });
-        }
 
         const isTouchDevice = matchMedia('(pointer: coarse)').matches;
         if (isTouchDevice) {
