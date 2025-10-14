@@ -73,10 +73,17 @@
             text-decoration: none;
         }
 
-        img {
+        img,
+        video {
             display: block;
             max-width: 100%;
             border-radius: var(--radius-sm);
+        }
+
+        video {
+            width: 100%;
+            height: auto;
+            background: rgba(2, 6, 23, 0.65);
         }
 
         .bg-orb {
@@ -119,38 +126,70 @@
             position: sticky;
             top: 0;
             z-index: 999;
-            backdrop-filter: blur(18px);
-            background: rgba(6, 11, 23, 0.82);
-            border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+            backdrop-filter: blur(22px) saturate(140%);
+            background: linear-gradient(120deg, rgba(6, 11, 23, 0.68), rgba(30, 41, 59, 0.32));
+            border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+            box-shadow: 0 22px 40px rgba(2, 6, 23, 0.38);
+            transition: transform 0.45s ease, opacity 0.35s ease, background 0.4s ease, box-shadow 0.4s ease;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 20% -40%, rgba(99, 102, 241, 0.28), transparent 55%),
+                radial-gradient(circle at 80% -60%, rgba(236, 72, 153, 0.22), transparent 60%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        header.header-scrolled::before {
+            opacity: 1;
+        }
+
+        .header-hidden {
+            transform: translateY(-110%);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        header.header-scrolled {
+            background: linear-gradient(135deg, rgba(6, 11, 23, 0.82), rgba(30, 58, 138, 0.35));
+            box-shadow: 0 28px 55px rgba(2, 6, 23, 0.45);
+            border-bottom-color: rgba(148, 163, 184, 0.22);
         }
 
         .nav {
             max-width: 1220px;
             margin: 0 auto;
-            padding: clamp(0.8rem, 2vw, 1.25rem) clamp(1.25rem, 4vw, 3.2rem);
+            padding: clamp(0.55rem, 1.6vw, 0.9rem) clamp(1.2rem, 3.6vw, 2.6rem);
             display: flex;
             align-items: center;
-            gap: clamp(1rem, 3vw, 3rem);
+            gap: clamp(1rem, 2.4vw, 2.4rem);
         }
 
         .brand {
             display: flex;
             align-items: center;
-            gap: clamp(0.75rem, 2.4vw, 1.6rem);
+            gap: clamp(0.65rem, 2vw, 1.25rem);
             flex: 1;
         }
 
         .brand-logo {
-            width: clamp(48px, 5vw, 68px);
-            height: clamp(48px, 5vw, 68px);
-            border-radius: 26px;
-            background: var(--cta);
+            width: clamp(46px, 4.2vw, 60px);
+            height: clamp(46px, 4.2vw, 60px);
+            border-radius: 20px;
+            background: linear-gradient(150deg, rgba(15, 23, 42, 0.82), rgba(2, 6, 23, 0.6));
+            border: 1px solid rgba(148, 163, 184, 0.24);
+            box-shadow: 0 20px 40px rgba(2, 6, 23, 0.28);
             display: grid;
             place-items: center;
-            font-size: clamp(1.35rem, 2.8vw, 1.75rem);
-            font-weight: 900;
-            color: #020617;
-            box-shadow: 0 25px 60px rgba(45, 212, 191, 0.35);
+            font-size: clamp(1.1rem, 2.2vw, 1.45rem);
+            font-weight: 800;
+            color: #0f172a;
             overflow: hidden;
             position: relative;
             isolation: isolate;
@@ -159,7 +198,68 @@
         .brand-logo img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
+            padding: 0.35rem;
+            filter: drop-shadow(0 4px 10px rgba(15, 23, 42, 0.45));
+        }
+
+        .brand-logo-interactive {
+            cursor: pointer;
+            background: linear-gradient(150deg, rgba(15, 23, 42, 0.78), rgba(15, 23, 42, 0.42));
+            border: 1px solid rgba(148, 163, 184, 0.32);
+            backdrop-filter: blur(18px);
+            transition: border 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+        }
+
+        .brand-logo-interactive:hover,
+        .brand-logo-interactive.is-dragover {
+            border-color: rgba(94, 234, 212, 0.7);
+            box-shadow: 0 22px 44px rgba(15, 23, 42, 0.45);
+            transform: translateY(-1px);
+        }
+
+        .brand-logo-interactive:focus-visible {
+            outline: 2px solid rgba(94, 234, 212, 0.65);
+            outline-offset: 4px;
+        }
+
+        .brand-logo-interactive.brand-logo-error {
+            border-color: rgba(248, 113, 113, 0.85);
+            box-shadow: 0 0 0 1px rgba(248, 113, 113, 0.45);
+        }
+
+        .brand-logo-interactive[data-feedback]::after {
+            content: attr(data-feedback);
+            position: absolute;
+            inset: 0;
+            display: grid;
+            place-items: center;
+            border-radius: inherit;
+            background: rgba(2, 6, 23, 0.72);
+            color: rgba(248, 113, 113, 0.92);
+            font-size: 0.58rem;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            pointer-events: none;
+        }
+
+        .brand-logo-hint {
+            font-size: 0.62rem;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: rgba(148, 163, 184, 0.75);
+            text-align: center;
+            line-height: 1.1;
+            display: grid;
+            gap: 0.2rem;
+            justify-items: center;
+            align-content: center;
+        }
+
+        .brand-logo-hint span {
+            font-size: 0.58rem;
+            letter-spacing: 0.32em;
+            color: rgba(226, 232, 240, 0.8);
         }
 
         .brand-name {
@@ -171,13 +271,13 @@
         .brand-name span:first-child {
             text-transform: uppercase;
             letter-spacing: 0.32em;
-            font-size: clamp(0.68rem, 1.5vw, 0.8rem);
+            font-size: clamp(0.62rem, 1.3vw, 0.72rem);
             color: rgba(148, 163, 184, 0.75);
         }
 
         .brand-name span:last-child {
-            font-size: clamp(1.2rem, 2.6vw, 1.6rem);
-            letter-spacing: 0.08em;
+            font-size: clamp(1.05rem, 2.2vw, 1.35rem);
+            letter-spacing: 0.06em;
         }
 
         .nav-links {
@@ -212,50 +312,49 @@
         }
 
         .nav-cta {
-            padding: 0.85rem 1.9rem;
+            padding: 0.7rem 1.7rem;
             border-radius: 999px;
-            border: none;
-            background: var(--cta);
-            color: #010510;
+            border: 1px solid rgba(148, 163, 184, 0.32);
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.4));
+            color: rgba(226, 232, 240, 0.92);
             font-weight: 800;
             letter-spacing: 0.18em;
             text-transform: uppercase;
-            font-size: 0.78rem;
+            font-size: 0.74rem;
             cursor: pointer;
-            box-shadow: 0 25px 70px rgba(93, 133, 247, 0.35);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 18px 42px rgba(2, 6, 23, 0.45);
+            backdrop-filter: blur(16px);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-cta::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.25), rgba(129, 140, 248, 0.18));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            mix-blend-mode: screen;
+            pointer-events: none;
         }
 
         .nav-cta:hover {
-            transform: translateY(-1px) scale(1.02);
-            box-shadow: 0 32px 80px rgba(99, 102, 241, 0.45);
+            transform: translateY(-1px);
+            box-shadow: 0 24px 56px rgba(2, 6, 23, 0.52);
+            border-color: rgba(94, 234, 212, 0.55);
         }
 
-        .logo-uploader {
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            font-size: 0.78rem;
-            color: rgba(148, 163, 184, 0.75);
-            padding: 0 1.2rem 0.8rem;
+        .nav-cta:hover::before {
+            opacity: 1;
         }
 
-        .logo-uploader label {
-            padding: 0.35rem 0.9rem;
-            border-radius: 999px;
-            border: 1px dashed rgba(148, 163, 184, 0.4);
-            cursor: pointer;
-            transition: border 0.2s ease, color 0.2s ease;
+        .nav-cta:focus-visible {
+            outline: 2px solid rgba(94, 234, 212, 0.55);
+            outline-offset: 3px;
         }
 
-        .logo-uploader input {
-            display: none;
-        }
-
-        .logo-uploader label:hover {
-            border-color: rgba(94, 234, 212, 0.6);
-            color: rgba(94, 234, 212, 0.8);
-        }
 
         main {
             max-width: 1220px;
@@ -536,10 +635,12 @@
             position: relative;
         }
 
-        .hero-preview img {
+        .hero-preview img,
+        .hero-preview video {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            border-radius: inherit;
         }
 
         .upload-drop {
@@ -728,7 +829,8 @@
             grid-template-rows: auto 1fr;
         }
 
-        .media-card img {
+        .media-card img,
+        .media-card video {
             min-height: 200px;
             object-fit: cover;
         }
@@ -1023,12 +1125,6 @@
             }
         }
 
-        @media (max-width: 860px) {
-            .logo-uploader {
-                display: none;
-            }
-        }
-
         @media (max-width: 720px) {
             .hero-card, .hero-media {
                 padding: clamp(1.6rem, 6vw, 2.2rem);
@@ -1075,11 +1171,21 @@
     <header>
         <nav class="nav">
             <div class="brand">
-                <div class="brand-logo" id="brandLogo">FT</div>
+                <div
+                    class="brand-logo brand-logo-interactive"
+                    id="brandLogo"
+                    tabindex="0"
+                    role="button"
+                    aria-label="Sube tu logo en formato PNG"
+                    title="Haz clic o arrastra para subir tu logo PNG"
+                >
+                    <span class="brand-logo-hint">Logo<span>PNG</span></span>
+                </div>
                 <div class="brand-name">
                     <span>FitTrack Pro</span>
                     <span>Entrena. Escala. Impacta.</span>
                 </div>
+                <input type="file" id="logoInput" accept="image/png" hidden />
             </div>
             <div class="nav-links">
                 <a href="#solucion">Solución</a>
@@ -1090,11 +1196,6 @@
             </div>
             <button class="nav-cta" data-scroll="#cta">Agenda demo</button>
         </nav>
-        <div class="logo-uploader">
-            <label for="logoInput">Sube tu logo</label>
-            <input type="file" id="logoInput" accept="image/*" />
-            <span>Se actualizará en vivo en la landing.</span>
-        </div>
     </header>
     <main>
         <section class="hero">
@@ -1184,12 +1285,12 @@
                 </div>
                 <div class="hero-media reveal" data-animate="slide-left" id="demo">
                     <div class="hero-preview" id="heroPreview">
-                        <span style="color: rgba(148,163,184,0.8); font-size:0.9rem; text-align:center; padding:1.5rem;">Sube una captura de tu app o deja que mostremos la demo.</span>
+                        <span style="color: rgba(148,163,184,0.8); font-size:0.9rem; text-align:center; padding:1.5rem;">Sube una captura o video de tu app o deja que mostremos la demo.</span>
                     </div>
                     <label class="upload-drop" for="heroUpload">
-                        Arrastra y suelta o selecciona una imagen para personalizar tu hero.
+                        Arrastra y suelta o selecciona una imagen o video para personalizar tu hero.
                     </label>
-                    <input type="file" id="heroUpload" accept="image/*" hidden data-target="heroPreview" />
+                    <input type="file" id="heroUpload" accept="image/*,video/*" hidden data-target="heroPreview" />
                     <div class="strip">
                         <div>
                             <strong>Confían en FitTrack Pro</strong>
@@ -1357,8 +1458,8 @@
                         </span>
                         <h3>Seguimiento de comidas</h3>
                         <p>Registro visual de macros, recordatorios automáticos, recetas sugeridas y análisis de adherencia por semana.</p>
-                        <label class="upload-drop" for="seguimientoUpload">Personaliza con tu captura de dashboard</label>
-                        <input type="file" id="seguimientoUpload" accept="image/*" hidden data-target="seguimientoImg" />
+                        <label class="upload-drop" for="seguimientoUpload">Personaliza con tu captura o video del dashboard</label>
+                        <input type="file" id="seguimientoUpload" accept="image/*,video/*" hidden data-target="seguimientoImg" />
                     </div>
                 </div>
                 <div class="media-card reveal" data-animate="slide-up">
@@ -1381,8 +1482,8 @@
                         </span>
                         <h3>Rutinas personalizadas y probadas</h3>
                         <p>Combina bloques de entrenamiento probados con ajustes dinámicos según progreso, feedback y tiempo disponible.</p>
-                        <label class="upload-drop" for="rutinasUpload">Sube un mockup de tu rutina</label>
-                        <input type="file" id="rutinasUpload" accept="image/*" hidden data-target="rutinasImg" />
+                        <label class="upload-drop" for="rutinasUpload">Sube un mockup o video de tu rutina</label>
+                        <input type="file" id="rutinasUpload" accept="image/*,video/*" hidden data-target="rutinasImg" />
                     </div>
                 </div>
                 <div class="media-card reveal" data-animate="slide-up">
@@ -1405,8 +1506,8 @@
                         </span>
                         <h3>Panel especial para coach</h3>
                         <p>Agenda inteligente, check-ins automatizados, notas de voz, marketing integrado y upsells a un clic.</p>
-                        <label class="upload-drop" for="coachUpload">Muestra tu panel de coach</label>
-                        <input type="file" id="coachUpload" accept="image/*" hidden data-target="coachImg" />
+                        <label class="upload-drop" for="coachUpload">Muestra tu panel de coach en imagen o video</label>
+                        <input type="file" id="coachUpload" accept="image/*,video/*" hidden data-target="coachImg" />
                     </div>
                 </div>
             </div>
@@ -1965,8 +2066,8 @@
                         </span>
                         <h3>Equipo de coaches certificados</h3>
                         <p>Destaca la calidad humana de tu equipo con fotografías profesionales y mensajes inspiradores.</p>
-                        <label class="upload-drop" for="galeriaUpload1">Sube tu fotografía</label>
-                        <input type="file" id="galeriaUpload1" accept="image/*" hidden data-target="galeria1" />
+                        <label class="upload-drop" for="galeriaUpload1">Sube tu fotografía o video</label>
+                        <input type="file" id="galeriaUpload1" accept="image/*,video/*" hidden data-target="galeria1" />
                     </div>
                 </div>
                 <div class="media-card reveal" data-animate="slide-up">
@@ -1989,8 +2090,8 @@
                         </span>
                         <h3>Recetas irresistibles</h3>
                         <p>Comparte contenido culinario para reforzar la adherencia y crear conexión emocional.</p>
-                        <label class="upload-drop" for="galeriaUpload2">Actualizar imagen</label>
-                        <input type="file" id="galeriaUpload2" accept="image/*" hidden data-target="galeria2" />
+                        <label class="upload-drop" for="galeriaUpload2">Actualizar imagen o video</label>
+                        <input type="file" id="galeriaUpload2" accept="image/*,video/*" hidden data-target="galeria2" />
                     </div>
                 </div>
                 <div class="media-card reveal" data-animate="slide-up">
@@ -2013,8 +2114,8 @@
                         </span>
                         <h3>Comunidad activa & eventos</h3>
                         <p>Promueve tus retos, eventos híbridos y meetups para aumentar retención.</p>
-                        <label class="upload-drop" for="galeriaUpload3">Cambiar fotografía</label>
-                        <input type="file" id="galeriaUpload3" accept="image/*" hidden data-target="galeria3" />
+                        <label class="upload-drop" for="galeriaUpload3">Cambiar fotografía o video</label>
+                        <input type="file" id="galeriaUpload3" accept="image/*,video/*" hidden data-target="galeria3" />
                     </div>
                 </div>
             </div>
@@ -2199,19 +2300,154 @@
         const logoInput = document.getElementById('logoInput');
         const brandLogo = document.getElementById('brandLogo');
         if (logoInput && brandLogo) {
-            logoInput.addEventListener('change', event => {
-                const file = event.target.files?.[0];
+            const showLogoFeedback = message => {
+                brandLogo.dataset.feedback = message;
+                brandLogo.classList.add('brand-logo-error');
+                setTimeout(() => {
+                    brandLogo.classList.remove('brand-logo-error');
+                    if (brandLogo.dataset.feedback === message) {
+                        delete brandLogo.dataset.feedback;
+                    }
+                }, 2200);
+            };
+
+            const previewLogo = file => {
                 if (!file) return;
+                const isPng = file.type === 'image/png' || file.name?.toLowerCase().endsWith('.png');
+                if (!isPng) {
+                    showLogoFeedback('Solo PNG');
+                    return;
+                }
+
                 const reader = new FileReader();
                 reader.onload = e => {
+                    const src = e.target?.result;
+                    if (!src) return;
                     brandLogo.innerHTML = '';
                     const img = document.createElement('img');
-                    img.src = e.target?.result;
+                    img.src = src;
                     img.alt = 'Logo personalizado';
                     brandLogo.appendChild(img);
+                    brandLogo.classList.remove('brand-logo-error');
+                    delete brandLogo.dataset.feedback;
                 };
                 reader.readAsDataURL(file);
+            };
+
+            const requestLogoUpload = () => {
+                brandLogo.classList.remove('brand-logo-error', 'is-dragover');
+                delete brandLogo.dataset.feedback;
+                logoInput.click();
+            };
+
+            logoInput.addEventListener('change', () => {
+                const [file] = logoInput.files || [];
+                previewLogo(file);
+                logoInput.value = '';
             });
+
+            brandLogo.addEventListener('click', requestLogoUpload);
+            brandLogo.addEventListener('keydown', event => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    requestLogoUpload();
+                }
+            });
+
+            brandLogo.addEventListener('dragover', event => {
+                event.preventDefault();
+                brandLogo.classList.add('is-dragover');
+                brandLogo.classList.remove('brand-logo-error');
+                delete brandLogo.dataset.feedback;
+            });
+
+            brandLogo.addEventListener('dragleave', () => {
+                brandLogo.classList.remove('is-dragover');
+            });
+
+            brandLogo.addEventListener('drop', event => {
+                event.preventDefault();
+                brandLogo.classList.remove('is-dragover');
+                const [file] = event.dataTransfer?.files || [];
+                previewLogo(file);
+            });
+        }
+
+        const siteHeader = document.querySelector('header');
+        let lastScrollY = window.scrollY;
+        let scrollTicking = false;
+
+        const updateHeaderState = () => {
+            if (!siteHeader) {
+                scrollTicking = false;
+                return;
+            }
+            const currentY = window.scrollY;
+            if (currentY > 12) {
+                siteHeader.classList.add('header-scrolled');
+            } else {
+                siteHeader.classList.remove('header-scrolled');
+            }
+
+            if (currentY > lastScrollY + 10 && currentY > 120) {
+                siteHeader.classList.add('header-hidden');
+            } else if (currentY < lastScrollY - 10 || currentY <= 120) {
+                siteHeader.classList.remove('header-hidden');
+            }
+
+            lastScrollY = currentY;
+            scrollTicking = false;
+        };
+
+        window.addEventListener('scroll', () => {
+            if (scrollTicking) return;
+            scrollTicking = true;
+            requestAnimationFrame(updateHeaderState);
+        });
+
+        updateHeaderState();
+
+        function ensureMediaMetadata(element) {
+            if (!element.dataset.mediaAlt) {
+                const altAttr = element.getAttribute?.('alt');
+                element.dataset.mediaAlt = altAttr || 'Vista personalizada';
+            }
+            if (!element.dataset.mediaClass) {
+                element.dataset.mediaClass = element.className || '';
+            }
+        }
+
+        function buildMediaElement(reference, type, src, altFallback = 'Vista personalizada') {
+            const isVideo = type === 'video';
+            const element = isVideo ? document.createElement('video') : document.createElement('img');
+            const isMediaTag = reference.tagName && ['IMG', 'VIDEO'].includes(reference.tagName);
+            const storedClass = isMediaTag ? (reference.dataset?.mediaClass || reference.className || '') : '';
+            const storedAlt = reference.dataset?.mediaAlt || altFallback;
+
+            if (isMediaTag) {
+                element.id = reference.id;
+            }
+
+            if (storedClass) {
+                element.className = storedClass;
+            }
+
+            element.dataset.mediaClass = storedClass;
+            element.dataset.mediaAlt = storedAlt;
+
+            if (isVideo) {
+                element.src = src;
+                element.muted = true;
+                element.loop = true;
+                element.autoplay = true;
+                element.controls = true;
+                element.playsInline = true;
+            } else {
+                element.src = src;
+                element.alt = storedAlt;
+            }
+
+            return element;
         }
 
         function handlePreviewUpload(input) {
@@ -2219,18 +2455,55 @@
             if (!file) return;
             const targetId = input.dataset.target;
             if (!targetId) return;
+            if (!file.type) return;
+
+            const isImage = file.type.startsWith('image/');
+            const isVideo = file.type.startsWith('video/');
+            if (!isImage && !isVideo) return;
+
+            const target = document.getElementById(targetId);
+            if (!target) return;
+
             const reader = new FileReader();
             reader.onload = e => {
-                const target = document.getElementById(targetId);
-                if (!target) return;
-                if (target.tagName.toLowerCase() === 'img') {
-                    target.src = e.target?.result;
+                const result = e.target?.result;
+                if (!result) return;
+
+                const targetTag = target.tagName.toLowerCase();
+
+                if (targetTag === 'img' || targetTag === 'video') {
+                    ensureMediaMetadata(target);
+
+                    if (isImage) {
+                        if (targetTag === 'img') {
+                            target.src = result;
+                        } else {
+                            const replacement = buildMediaElement(target, 'image', result);
+                            target.replaceWith(replacement);
+                        }
+                    } else if (isVideo) {
+                        let videoElement;
+                        if (targetTag === 'video') {
+                            videoElement = target;
+                            videoElement.src = result;
+                        } else {
+                            const replacement = buildMediaElement(target, 'video', result);
+                            target.replaceWith(replacement);
+                            videoElement = replacement;
+                        }
+                        requestAnimationFrame(() => videoElement.play().catch(() => {}));
+                    }
                 } else {
+                    const altText = input.dataset.alt || 'Vista personalizada';
                     target.innerHTML = '';
-                    const img = document.createElement('img');
-                    img.src = e.target?.result;
-                    img.alt = 'Vista personalizada';
-                    target.appendChild(img);
+                    const mediaElement = buildMediaElement(target, isVideo ? 'video' : 'image', result, altText);
+                    if (!['IMG', 'VIDEO'].includes(target.tagName)) {
+                        mediaElement.removeAttribute('id');
+                    }
+                    target.appendChild(mediaElement);
+                    if (isVideo) {
+                        requestAnimationFrame(() => mediaElement.play().catch(() => {}));
+                    }
                 }
             };
             reader.readAsDataURL(file);
@@ -2259,25 +2532,6 @@
                 item.classList.toggle('active');
             });
         });
-
-        const heroUpload = document.getElementById('heroUpload');
-        if (heroUpload) {
-            heroUpload.addEventListener('change', function () {
-                const file = this.files?.[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = e => {
-                    const preview = document.getElementById('heroPreview');
-                    if (!preview) return;
-                    preview.innerHTML = '';
-                    const img = document.createElement('img');
-                    img.src = e.target?.result;
-                    img.alt = 'Hero personalizado';
-                    preview.appendChild(img);
-                };
-                reader.readAsDataURL(file);
-            });
-        }
 
         const isTouchDevice = matchMedia('(pointer: coarse)').matches;
         if (isTouchDevice) {
