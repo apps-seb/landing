@@ -11,6 +11,12 @@
         :root {
             color-scheme: dark;
             --bg: #010510;
+            --bg-color-1: hsla(216, 86%, 16%, 0.9);
+            --bg-color-2: hsla(268, 82%, 18%, 0.9);
+            --bg-color-3: hsla(312, 88%, 20%, 0.85);
+            --bg-core: #010510;
+            --bg-shift-x: 0px;
+            --bg-shift-y: 0px;
             --surface: rgba(12, 19, 36, 0.8);
             --surface-strong: rgba(15, 23, 42, 0.92);
             --surface-soft: rgba(15, 23, 42, 0.6);
@@ -36,17 +42,38 @@
 
         body {
             margin: 0;
-            background:
-                radial-gradient(circle at 10% -5%, rgba(59, 130, 246, 0.32), transparent 45%),
-                radial-gradient(circle at 90% -10%, rgba(236, 72, 153, 0.28), transparent 48%),
-                radial-gradient(circle at 50% 120%, rgba(45, 212, 191, 0.18), transparent 52%),
-                var(--bg);
+            background: var(--bg-core);
             color: var(--text);
             line-height: 1.65;
             -webkit-font-smoothing: antialiased;
             overflow-x: hidden;
             scroll-behavior: smooth;
             position: relative;
+        }
+
+        .bg-gradient {
+            position: fixed;
+            inset: -10% -8% -12% -8%;
+            background:
+                radial-gradient(circle at 12% 10%, var(--bg-color-1), transparent 55%),
+                radial-gradient(circle at 82% 6%, var(--bg-color-2), transparent 60%),
+                radial-gradient(circle at 50% 88%, var(--bg-color-3), transparent 65%),
+                radial-gradient(circle at 20% 85%, rgba(45, 212, 191, 0.18), transparent 70%),
+                linear-gradient(160deg, rgba(2, 6, 23, 0.96), rgba(1, 6, 17, 0.98));
+            filter: saturate(1.15);
+            transform: translate3d(var(--bg-shift-x), var(--bg-shift-y), 0) scale(1.08);
+            transition: background 0.9s ease, transform 1.2s ease, filter 0.9s ease;
+            z-index: -3;
+        }
+
+        .bg-gradient::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160"%3E%3Cdefs%3E%3CradialGradient id="g" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(0 0) scale(1 1)"%3E%3Cstop stop-color="%23ffffff" stop-opacity="0.04"/%3E%3Cstop offset="1" stop-color="%23ffffff" stop-opacity="0"/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width="160" height="160" fill="url(%23g)"/%3E%3C/svg%3E');
+            opacity: 0.8;
+            mix-blend-mode: screen;
+            pointer-events: none;
         }
 
         h1, h2, h3, h4 {
@@ -60,6 +87,59 @@
             background: linear-gradient(120deg, #22d3ee, #a855f7, #fb7185);
             -webkit-background-clip: text;
             color: transparent;
+        }
+
+        .text-shimmer {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            background: linear-gradient(120deg, rgba(34, 211, 238, 0.85), rgba(129, 140, 248, 0.85), rgba(236, 72, 153, 0.8), rgba(34, 211, 238, 0.85));
+            background-size: 240% 240%;
+            -webkit-background-clip: text;
+            color: transparent;
+            animation: shimmerFlow 9s ease-in-out infinite;
+        }
+
+        .text-shimmer::after {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 999px;
+            background: radial-gradient(circle, rgba(125, 211, 252, 0.9), transparent 70%);
+            opacity: 0.75;
+            box-shadow: 0 0 16px rgba(125, 211, 252, 0.75);
+        }
+
+        .animated-paragraph {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .animated-paragraph::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg, rgba(59, 130, 246, 0.08), transparent 45%, rgba(236, 72, 153, 0.08));
+            transform: translateX(-120%);
+            transition: transform 1.6s cubic-bezier(0.22, 1, 0.36, 1);
+            pointer-events: none;
+        }
+
+        .reveal.is-visible .animated-paragraph::after,
+        .hero-card .animated-paragraph::after {
+            transform: translateX(120%);
+        }
+
+        @keyframes shimmerFlow {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
         }
 
         p {
@@ -77,6 +157,83 @@
             display: block;
             max-width: 100%;
             border-radius: var(--radius-sm);
+        }
+
+        .glass-card {
+            --card-glow: rgba(56, 189, 248, 0.45);
+            --card-glow-inset: -40% -25% auto;
+            --card-glow-height: 70%;
+            --card-glow-origin: top;
+            position: relative;
+            border-radius: var(--radius-md);
+            background: linear-gradient(135deg, rgba(8, 14, 29, 0.55), rgba(2, 6, 23, 0.85));
+            border: 1px solid rgba(148, 163, 184, 0.32);
+            backdrop-filter: blur(24px);
+            box-shadow: 0 32px 80px rgba(2, 6, 23, 0.65);
+            overflow: hidden;
+            isolation: isolate;
+            transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.6s ease, box-shadow 0.6s ease;
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.16), rgba(148, 163, 184, 0.02));
+            opacity: 0.65;
+            mix-blend-mode: screen;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .glass-card::after {
+            content: '';
+            position: absolute;
+            inset: var(--card-glow-inset);
+            height: var(--card-glow-height);
+            background: radial-gradient(circle at var(--card-glow-origin), var(--card-glow), transparent 65%);
+            opacity: 0.7;
+            pointer-events: none;
+            transition: transform 0.8s ease, opacity 0.8s ease;
+            z-index: 0;
+        }
+
+        .glass-card > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .glass-card:hover {
+            transform: translate3d(0, -8px, 0);
+            border-color: rgba(148, 163, 184, 0.5);
+            box-shadow: 0 40px 120px rgba(2, 6, 23, 0.75);
+        }
+
+        .glass-card:hover::after {
+            transform: translate3d(0, -6%, 0) scale(1.05);
+            opacity: 0.9;
+        }
+
+        .text-aurora {
+            background: linear-gradient(120deg, #22d3ee, #38bdf8, #a855f7, #f472b6, #22d3ee);
+            background-size: 250% 250%;
+            -webkit-background-clip: text;
+            color: transparent;
+            animation: auroraFlow 14s ease infinite;
+            text-shadow: 0 0 24px rgba(56, 189, 248, 0.35);
+        }
+
+        @keyframes auroraFlow {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
         }
 
         .bg-orb {
@@ -122,6 +279,40 @@
             backdrop-filter: blur(18px);
             background: rgba(6, 11, 23, 0.82);
             border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+            transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.6s ease, filter 0.6s ease, background 0.6s ease;
+        }
+
+        header.is-hidden {
+            transform: translateY(-140%);
+            opacity: 0;
+            filter: blur(18px);
+            pointer-events: none;
+        }
+
+        header.is-compact {
+            background: rgba(6, 11, 23, 0.9);
+            border-bottom-color: rgba(148, 163, 184, 0.2);
+            box-shadow: 0 18px 48px rgba(2, 6, 23, 0.35);
+        }
+
+        header.is-compact .nav {
+            padding-top: clamp(0.55rem, 1.4vw, 0.9rem);
+            padding-bottom: clamp(0.55rem, 1.4vw, 0.9rem);
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            inset: auto 6% 0;
+            height: 1px;
+            background: linear-gradient(90deg, rgba(56, 189, 248, 0.2), rgba(168, 85, 247, 0.35), rgba(56, 189, 248, 0.2));
+            opacity: 0;
+            transition: opacity 0.6s ease;
+            pointer-events: none;
+        }
+
+        header.is-compact::after {
+            opacity: 1;
         }
 
         .nav {
@@ -350,13 +541,6 @@
             z-index: 1;
         }
 
-        .metric-card .card-icon {
-            width: 2.6rem;
-            height: 2.6rem;
-            border-radius: 0.9rem;
-            margin-bottom: 0.85rem;
-        }
-
         .pricing-card .card-icon {
             margin-bottom: 1.5rem;
         }
@@ -405,22 +589,218 @@
         .hero-card {
             padding: clamp(2rem, 5vw, 3.5rem);
             border-radius: var(--radius-lg);
-            background: linear-gradient(150deg, rgba(15, 23, 42, 0.85), rgba(2, 6, 23, 0.92));
-            border: 1px solid rgba(148, 163, 184, 0.2);
-            box-shadow: var(--shadow-xl);
+            --card-glow: rgba(56, 189, 248, 0.55);
+            --card-glow-inset: -60% -18% auto;
+            --card-glow-height: 88%;
+            --card-glow-origin: 32% 8%;
+        }
+
+        .hero-card::after {
+            animation: pulseGlow 12s ease-in-out infinite;
+        }
+
+        .hero-title {
+            font-size: clamp(2.8rem, 6vw, 4.1rem);
+            line-height: 1.05;
+            letter-spacing: -0.035em;
+            margin-bottom: clamp(1.1rem, 3vw, 1.6rem);
+            display: grid;
+            gap: 0.45rem;
+            animation: heroRise 0.9s ease-out both;
+        }
+
+        .hero-title .text-aurora {
+            display: inline-block;
+        }
+
+        .hero-card > p {
+            animation: heroRise 1.1s ease-out both;
+        }
+
+        .hero-card .hero-actions {
+            animation: heroRise 1.3s ease-out both;
+        }
+
+        .hero-metric-strip {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1.25rem;
+            margin-top: clamp(1.6rem, 4vw, 2.8rem);
+            padding-top: 1.4rem;
+            border-top: 1px solid rgba(148, 163, 184, 0.2);
+        }
+
+        .hero-metric {
+            display: flex;
+            flex-direction: column;
+            gap: 0.45rem;
+            position: relative;
+            padding: 0.75rem 0.5rem;
+            border-radius: 1.25rem;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.4), rgba(15, 23, 42, 0.05));
+            border: 1px solid rgba(148, 163, 184, 0.16);
+            box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.06);
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .hero-metric::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.1), transparent 65%);
+            opacity: 0;
+            transition: opacity 0.6s ease;
+            z-index: 0;
+        }
+
+        .hero-metric:hover::before {
+            opacity: 1;
+        }
+
+        .hero-metric > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-metric strong {
+            font-size: clamp(1.4rem, 2.2vw, 1.8rem);
+            letter-spacing: -0.02em;
+        }
+
+        .hero-metric span {
+            font-size: 0.78rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: rgba(148, 163, 184, 0.75);
+        }
+
+        .hero-metric p {
+            margin: 0;
+            color: rgba(203, 213, 225, 0.78);
+            font-size: clamp(0.85rem, 0.8rem + 0.2vw, 0.95rem);
+            line-height: 1.5;
+        }
+
+        .insights {
+            position: relative;
+        }
+
+        .insights::before {
+            content: '';
+            position: absolute;
+            inset: -60% -30% auto;
+            height: 180%;
+            background: radial-gradient(circle at 20% 40%, rgba(34, 211, 238, 0.1), transparent 70%);
+            pointer-events: none;
+            filter: blur(80px);
+            opacity: 0.8;
+        }
+
+        .insights-wrapper {
+            display: grid;
+            gap: clamp(1.8rem, 4vw, 2.6rem);
+            padding: clamp(2rem, 5vw, 3.5rem);
+            border-radius: var(--radius-lg);
+            background: linear-gradient(135deg, rgba(10, 20, 38, 0.9), rgba(8, 15, 32, 0.72));
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            backdrop-filter: blur(24px);
+            box-shadow: 0 48px 120px rgba(2, 6, 23, 0.55);
             position: relative;
             overflow: hidden;
         }
 
-        .hero-card::before {
+        .insights-wrapper::after {
             content: '';
             position: absolute;
-            inset: -40% -10% auto;
+            inset: 0;
+            background: radial-gradient(circle at 85% 15%, rgba(236, 72, 153, 0.25), transparent 65%);
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .insights-header {
+            max-width: 680px;
+            display: grid;
+            gap: 1rem;
+        }
+
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: clamp(1.4rem, 3vw, 2.2rem);
+        }
+
+        .insight-card {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            padding: 1.6rem;
+            border-radius: var(--radius-md);
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.55), rgba(15, 23, 42, 0.22));
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .insight-card::before {
+            content: '';
+            position: absolute;
+            inset: -40% 20% auto -40%;
             height: 80%;
-            background: radial-gradient(circle at top, rgba(56, 189, 248, 0.35), transparent 60%);
-            z-index: -1;
-            opacity: 0.8;
-            animation: pulseGlow 12s ease-in-out infinite;
+            background: linear-gradient(120deg, rgba(59, 130, 246, 0.22), transparent);
+            opacity: 0.6;
+            filter: blur(42px);
+        }
+
+        .insight-card strong {
+            font-size: clamp(1.6rem, 2.6vw, 2.1rem);
+            letter-spacing: -0.03em;
+        }
+
+        .insight-card span {
+            text-transform: uppercase;
+            letter-spacing: 0.22em;
+            font-size: 0.72rem;
+            color: rgba(148, 163, 184, 0.7);
+        }
+
+        .insight-card p {
+            margin: 0;
+            color: rgba(226, 232, 240, 0.78);
+            font-size: clamp(0.85rem, 0.8rem + 0.2vw, 0.95rem);
+            line-height: 1.55;
+        }
+
+        .trend-line {
+            width: 100%;
+            height: 72px;
+            border-radius: 1rem;
+            background: linear-gradient(180deg, rgba(34, 211, 238, 0.4), rgba(34, 211, 238, 0));
+            position: relative;
+            overflow: hidden;
+        }
+
+        .trend-line::after {
+            content: '';
+            position: absolute;
+            inset: 12% 8% 18% 8%;
+            background: linear-gradient(120deg, rgba(236, 72, 153, 0.35), rgba(56, 189, 248, 0.6));
+            border-radius: 999px;
+            opacity: 0.75;
+            filter: blur(0);
+            animation: trendPulse 12s ease-in-out infinite;
+        }
+
+        @keyframes trendPulse {
+            0%, 100% {
+                transform: translateX(-8%) scaleY(1);
+                opacity: 0.65;
+            }
+            50% {
+                transform: translateX(8%) scaleY(1.08);
+                opacity: 1;
+            }
         }
 
         @keyframes pulseGlow {
@@ -431,6 +811,28 @@
             50% {
                 transform: scale(1.08) translateY(-10px);
                 opacity: 1;
+            }
+        }
+
+        @keyframes chipPulse {
+            0%, 100% {
+                transform: translateY(0);
+                opacity: 0.85;
+            }
+            50% {
+                transform: translateY(-6px);
+                opacity: 1;
+            }
+        }
+
+        @keyframes heroRise {
+            0% {
+                opacity: 0;
+                transform: translateY(28px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
 
@@ -449,6 +851,15 @@
             text-transform: uppercase;
             background: rgba(148, 163, 184, 0.16);
             border: 1px solid rgba(148, 163, 184, 0.18);
+            animation: chipPulse 8s ease-in-out infinite;
+        }
+
+        .chip:nth-child(2) {
+            animation-delay: -2.4s;
+        }
+
+        .chip:nth-child(3) {
+            animation-delay: -4.8s;
         }
 
         .hero-actions {
@@ -505,24 +916,18 @@
         }
 
         .hero-media {
-            position: relative;
             border-radius: var(--radius-lg);
-            border: 1px solid rgba(148, 163, 184, 0.18);
-            background: linear-gradient(160deg, rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.92));
             padding: clamp(1.8rem, 4vw, 2.4rem);
             display: grid;
             gap: 1.4rem;
-            overflow: hidden;
+            --card-glow: rgba(236, 72, 153, 0.48);
+            --card-glow-inset: -55% 24% auto;
+            --card-glow-height: 82%;
+            --card-glow-origin: 72% 6%;
         }
 
         .hero-media::after {
-            content: '';
-            position: absolute;
-            inset: -40% 30% auto;
-            height: 70%;
-            background: radial-gradient(circle at top, rgba(236, 72, 153, 0.28), transparent 60%);
-            z-index: -1;
-            animation: pulseGlow 14s ease infinite;
+            animation: pulseGlow 16s ease infinite;
         }
 
         .hero-preview {
@@ -558,36 +963,17 @@
             color: rgba(129, 140, 248, 0.9);
         }
 
-        .metrics {
-            display: grid;
-            gap: 1.2rem;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-        }
-
-        .metric-card {
-            padding: 1.4rem 1.6rem;
-            border-radius: var(--radius-md);
-            border: 1px solid rgba(148, 163, 184, 0.18);
-            background: rgba(15, 23, 42, 0.78);
-            display: grid;
-            gap: 0.35rem;
-        }
-
-        .metric-card strong {
-            font-size: clamp(1.5rem, 2.6vw, 2rem);
-            font-weight: 800;
-        }
-
         .strip {
             display: flex;
             flex-wrap: wrap;
             gap: 1.4rem;
             align-items: center;
             justify-content: space-between;
-            border: 1px solid rgba(148, 163, 184, 0.2);
             border-radius: var(--radius-md);
             padding: clamp(1.4rem, 4vw, 2.2rem);
-            background: rgba(10, 16, 28, 0.6);
+            --card-glow: rgba(94, 234, 212, 0.4);
+            --card-glow-inset: -55% -35% auto;
+            --card-glow-origin: left top;
         }
 
         .strip-logos {
@@ -605,31 +991,18 @@
 
         .feature-card {
             padding: clamp(1.6rem, 4vw, 2.2rem);
-            border-radius: var(--radius-md);
-            border: 1px solid rgba(148, 163, 184, 0.18);
-            background: var(--surface);
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.3s ease, border 0.3s ease;
-        }
-
-        .feature-card::after {
-            content: '';
-            position: absolute;
-            inset: auto -30% -40% -30%;
-            height: 70%;
-            background: radial-gradient(circle at bottom, rgba(59, 130, 246, 0.32), transparent 65%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            --card-glow: rgba(59, 130, 246, 0.38);
+            --card-glow-inset: auto -32% -48% -32%;
+            --card-glow-height: 78%;
+            --card-glow-origin: center bottom;
+            --tag-bg: rgba(59, 130, 246, 0.24);
+            transition: transform 0.45s ease, border-color 0.45s ease, box-shadow 0.45s ease;
         }
 
         .feature-card:hover {
-            transform: translateY(-6px);
-            border-color: rgba(56, 189, 248, 0.4);
-        }
-
-        .feature-card:hover::after {
-            opacity: 1;
+            transform: translateY(-8px);
+            border-color: rgba(94, 234, 212, 0.45);
+            box-shadow: 0 38px 90px rgba(2, 6, 23, 0.7);
         }
 
         .feature-card .tag {
@@ -640,16 +1013,23 @@
             letter-spacing: 0.16em;
             text-transform: uppercase;
             margin-bottom: 1rem;
+            background: var(--tag-bg);
         }
 
-        .feature-card:nth-child(1) { background: linear-gradient(160deg, rgba(59, 130, 246, 0.16), rgba(15, 23, 42, 0.92)); }
-        .feature-card:nth-child(1) .tag { background: rgba(59, 130, 246, 0.24); }
-        .feature-card:nth-child(2) { background: linear-gradient(160deg, rgba(52, 211, 153, 0.18), rgba(15, 23, 42, 0.92)); }
-        .feature-card:nth-child(2) .tag { background: rgba(52, 211, 153, 0.24); }
-        .feature-card:nth-child(3) { background: linear-gradient(160deg, rgba(234, 179, 8, 0.2), rgba(15, 23, 42, 0.92)); }
-        .feature-card:nth-child(3) .tag { background: rgba(234, 179, 8, 0.24); }
-        .feature-card:nth-child(4) { background: linear-gradient(160deg, rgba(236, 72, 153, 0.22), rgba(15, 23, 42, 0.92)); }
-        .feature-card:nth-child(4) .tag { background: rgba(236, 72, 153, 0.25); }
+        .feature-card:nth-child(2) {
+            --card-glow: rgba(52, 211, 153, 0.4);
+            --tag-bg: rgba(52, 211, 153, 0.26);
+        }
+
+        .feature-card:nth-child(3) {
+            --card-glow: rgba(234, 179, 8, 0.4);
+            --tag-bg: rgba(234, 179, 8, 0.26);
+        }
+
+        .feature-card:nth-child(4) {
+            --card-glow: rgba(236, 72, 153, 0.46);
+            --tag-bg: rgba(236, 72, 153, 0.28);
+        }
 
         .pillars {
             display: grid;
@@ -686,22 +1066,12 @@
 
         .module-card {
             padding: clamp(1.6rem, 4vw, 2.4rem);
-            border-radius: var(--radius-md);
-            border: 1px solid rgba(148, 163, 184, 0.18);
-            background: rgba(15, 23, 42, 0.78);
             display: grid;
             gap: 0.8rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .module-card::after {
-            content: '';
-            position: absolute;
-            inset: auto -20% -35% -20%;
-            height: 65%;
-            background: radial-gradient(circle at bottom, rgba(148, 163, 184, 0.22), transparent 65%);
-            opacity: 0.7;
+            --card-glow: rgba(59, 130, 246, 0.4);
+            --card-glow-inset: auto -22% -40% -22%;
+            --card-glow-height: 68%;
+            --card-glow-origin: center bottom;
         }
 
         .module-card strong {
@@ -709,9 +1079,25 @@
             letter-spacing: 0.04em;
         }
 
-        .module-card:nth-child(odd) { background: linear-gradient(150deg, rgba(59, 130, 246, 0.18), rgba(15, 23, 42, 0.92)); }
-        .module-card:nth-child(even) { background: linear-gradient(150deg, rgba(16, 185, 129, 0.18), rgba(15, 23, 42, 0.92)); }
-        .module-card:nth-child(3n) { background: linear-gradient(150deg, rgba(245, 158, 11, 0.2), rgba(15, 23, 42, 0.92)); }
+        .module-card:nth-child(2) {
+            --card-glow: rgba(16, 185, 129, 0.42);
+        }
+
+        .module-card:nth-child(3) {
+            --card-glow: rgba(245, 158, 11, 0.42);
+        }
+
+        .module-card:nth-child(4) {
+            --card-glow: rgba(251, 113, 133, 0.45);
+        }
+
+        .module-card:nth-child(5) {
+            --card-glow: rgba(124, 58, 237, 0.45);
+        }
+
+        .module-card:nth-child(6) {
+            --card-glow: rgba(56, 189, 248, 0.42);
+        }
 
         .media-row {
             display: grid;
@@ -720,12 +1106,12 @@
         }
 
         .media-card {
-            border-radius: var(--radius-md);
-            border: 1px solid rgba(148, 163, 184, 0.18);
-            background: rgba(10, 16, 28, 0.6);
-            overflow: hidden;
             display: grid;
             grid-template-rows: auto 1fr;
+            --card-glow: rgba(14, 165, 233, 0.34);
+            --card-glow-inset: -48% 16% auto;
+            --card-glow-height: 75%;
+            --card-glow-origin: 70% 8%;
         }
 
         .media-card img {
@@ -741,11 +1127,13 @@
 
         .showcase {
             border-radius: var(--radius-lg);
-            border: 1px solid rgba(148, 163, 184, 0.18);
-            background: linear-gradient(160deg, rgba(15, 23, 42, 0.85), rgba(2, 6, 23, 0.94));
             padding: clamp(2rem, 5vw, 3.5rem);
             display: grid;
             gap: clamp(1.4rem, 3vw, 2rem);
+            --card-glow: rgba(236, 72, 153, 0.44);
+            --card-glow-inset: -58% 18% auto;
+            --card-glow-height: 92%;
+            --card-glow-origin: 65% 8%;
         }
 
         .timeline {
@@ -799,20 +1187,20 @@
         }
 
         .pricing-card {
-            border-radius: var(--radius-md);
-            border: 1px solid rgba(148, 163, 184, 0.18);
-            background: rgba(15, 23, 42, 0.78);
             padding: clamp(1.8rem, 4vw, 2.6rem);
             display: grid;
             gap: 1rem;
-            position: relative;
-            overflow: hidden;
+            --card-glow: rgba(129, 140, 248, 0.38);
+            --card-glow-inset: auto -28% -42% -28%;
+            --card-glow-height: 78%;
+            --card-glow-origin: center bottom;
         }
 
         .pricing-card:nth-child(2) {
-            background: linear-gradient(160deg, rgba(99, 102, 241, 0.22), rgba(15, 23, 42, 0.94));
-            border: 1px solid rgba(99, 102, 241, 0.35);
-            transform: translateY(-6px);
+            --card-glow: rgba(99, 102, 241, 0.52);
+            transform: translateY(-8px);
+            border-color: rgba(129, 140, 248, 0.55);
+            box-shadow: 0 42px 110px rgba(67, 56, 202, 0.55);
         }
 
         .pricing-card ul {
@@ -838,22 +1226,12 @@
 
         .testimonial {
             padding: clamp(1.6rem, 4vw, 2.3rem);
-            border-radius: var(--radius-md);
-            border: 1px solid rgba(148, 163, 184, 0.18);
-            background: rgba(10, 16, 28, 0.75);
             display: grid;
             gap: 0.9rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .testimonial::before {
-            content: '“';
-            font-size: 5rem;
-            position: absolute;
-            top: -1.2rem;
-            left: 1rem;
-            color: rgba(94, 234, 212, 0.22);
+            --card-glow: rgba(94, 234, 212, 0.38);
+            --card-glow-inset: -52% -12% auto;
+            --card-glow-height: 80%;
+            --card-glow-origin: 28% 12%;
         }
 
         .testimonial strong {
@@ -866,9 +1244,8 @@
         }
 
         .faq-item {
-            border-radius: var(--radius-sm);
-            border: 1px solid rgba(148, 163, 184, 0.18);
-            background: rgba(15, 23, 42, 0.72);
+            border-radius: var(--radius-md);
+            --card-glow: rgba(59, 130, 246, 0.34);
             overflow: hidden;
         }
 
@@ -906,38 +1283,43 @@
 
         .cta-block {
             border-radius: var(--radius-lg);
-            border: 1px solid rgba(148, 163, 184, 0.18);
-            background: linear-gradient(140deg, rgba(2, 6, 23, 0.94), rgba(15, 23, 42, 0.88));
             padding: clamp(2rem, 6vw, 3.8rem);
             display: grid;
             gap: 1.6rem;
             text-align: center;
             position: relative;
             overflow: hidden;
+            --card-glow: rgba(99, 102, 241, 0.52);
+            --card-glow-inset: -68% 12% auto;
+            --card-glow-height: 96%;
+            --card-glow-origin: center top;
         }
 
-        .cta-block::before, .cta-block::after {
-            content: '';
+        .cta-orb {
             position: absolute;
+            width: clamp(220px, 28vw, 360px);
+            aspect-ratio: 1;
             border-radius: 999px;
-            filter: blur(90px);
-            opacity: 0.25;
+            filter: blur(110px);
+            opacity: 0.42;
+            pointer-events: none;
+            z-index: 0;
+            background: radial-gradient(circle at center, var(--orb-color), transparent 70%);
+            animation: orbFloat 28s ease-in-out infinite;
         }
 
-        .cta-block::before {
-            width: 320px;
-            height: 320px;
-            background: rgba(34, 211, 238, 0.8);
+        .cta-orb--one {
+            --orb-color: rgba(34, 211, 238, 0.9);
             top: -140px;
-            left: 10%;
+            left: 8%;
+            animation-delay: -6s;
         }
 
-        .cta-block::after {
-            width: 260px;
-            height: 260px;
-            background: rgba(168, 85, 247, 0.7);
-            bottom: -160px;
-            right: 12%;
+        .cta-orb--two {
+            --orb-color: rgba(168, 85, 247, 0.85);
+            bottom: -150px;
+            right: 10%;
+            animation-delay: -14s;
         }
 
         footer {
@@ -1039,14 +1421,14 @@
                 text-align: center;
             }
 
-            .metrics {
+            .hero-metric-strip {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
             }
         }
 
         @media (max-width: 560px) {
-            .metrics {
-                grid-template-columns: 1fr 1fr;
+            .hero-metric-strip {
+                grid-template-columns: 1fr;
             }
 
             .hero-actions {
@@ -1069,6 +1451,7 @@
     </style>
 </head>
 <body>
+    <div class="bg-gradient" aria-hidden="true"></div>
     <div class="bg-orb" style="left:-140px;top:-120px"></div>
     <div class="bg-orb" style="right:-180px;top:-240px"></div>
     <div class="bg-orb" style="left:-120px;bottom:-200px"></div>
@@ -1099,7 +1482,7 @@
     <main>
         <section class="hero">
             <div class="hero-grid">
-                <div class="hero-card reveal" data-animate="slide-right">
+                <div class="hero-card glass-card reveal" data-animate="slide-right">
                     <div class="hero-chipset">
                         <span class="chip">App para coaches</span>
                         <span class="chip">Ventas recurrentes</span>
@@ -1119,70 +1502,40 @@
                             <path d="M20 14 24 10l4 4" stroke="url(#grad-hero-icon)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
                     </span>
-                    <h1>Transforma tu <span>negocio fitness</span> en una máquina de resultados.</h1>
-                    <p>
+                    <h1 class="hero-title">Transforma tu <span class="text-aurora">negocio fitness</span> en una máquina de resultados.</h1>
+                    <p class="animated-paragraph">
                         FitTrack Pro integra seguimiento de comidas, rutinas probadas, coaching 1:1 y automatización de ventas en una sola app.
-                        Impacta a cada asesorado con programas hiper-personalizados, métricas accionables y contenido visual que se siente profesional.
+                        <span class="text-shimmer">Impacta a cada asesorado</span> con programas hiper-personalizados, métricas accionables y contenido visual que se siente profesional.
                     </p>
                     <div class="hero-actions">
                         <button class="btn-primary" data-scroll="#cta">Reservar diagnóstico</button>
                         <button class="btn-secondary" data-scroll="#modulos">Ver módulos</button>
                         <button class="btn-ghost" data-scroll="#demo">Probar demo</button>
                     </div>
-                    <div class="metrics">
-                        <div class="metric-card">
-                            <span class="card-icon" aria-hidden="true">
-                                <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <defs>
-                                        <linearGradient id="grad-metric-growth" x1="12" y1="36" x2="36" y2="12" gradientUnits="userSpaceOnUse">
-                                            <stop stop-color="#22d3ee" />
-                                            <stop offset="0.5" stop-color="#34d399" />
-                                            <stop offset="1" stop-color="#facc15" />
-                                        </linearGradient>
-                                    </defs>
-                                    <path d="M10 30 20 22l6 6 12-14" stroke="url(#grad-metric-growth)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
-                                    <path d="M30 14h8v8" stroke="url(#grad-metric-growth)" stroke-width="3" stroke-linecap="round" />
-                                </svg>
-                            </span>
+                    <div class="hero-metric-strip">
+                        <div class="hero-metric">
                             <strong>+210%</strong>
-                            <span>Incremento en retención mensual de asesorados en los primeros 90 días.</span>
+                            <span>Retención 90 días</span>
+                            <p>Los programas automatizados y alertas predictivas elevan la adherencia promedio x3.</p>
                         </div>
-                        <div class="metric-card">
-                            <span class="card-icon" aria-hidden="true">
-                                <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <defs>
-                                        <linearGradient id="grad-metric-time" x1="14" y1="10" x2="34" y2="38" gradientUnits="userSpaceOnUse">
-                                            <stop stop-color="#38bdf8" />
-                                            <stop offset="0.5" stop-color="#6366f1" />
-                                            <stop offset="1" stop-color="#f472b6" />
-                                        </linearGradient>
-                                    </defs>
-                                    <circle cx="24" cy="24" r="13" stroke="url(#grad-metric-time)" stroke-width="3" />
-                                    <path d="M24 16v8l6 3" stroke="url(#grad-metric-time)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
-                                </svg>
-                            </span>
-                            <strong>18 hrs</strong>
-                            <span>Ahorradas por coach cada semana en seguimiento manual y reportes.</span>
+                        <div class="hero-metric">
+                            <strong>18h</strong>
+                            <span>Tiempo recuperado</span>
+                            <p>Reportes, mensajería y ajustes nutricionales se consolidan en un panel visual listo para compartir.</p>
                         </div>
-                        <div class="metric-card">
-                            <span class="card-icon" aria-hidden="true">
-                                <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <defs>
-                                        <linearGradient id="grad-metric-star" x1="14" y1="8" x2="34" y2="40" gradientUnits="userSpaceOnUse">
-                                            <stop stop-color="#fbbf24" />
-                                            <stop offset="0.4" stop-color="#fb7185" />
-                                            <stop offset="1" stop-color="#a855f7" />
-                                        </linearGradient>
-                                    </defs>
-                                    <path d="m24 10 4.5 9.1 10 1.4-7.3 7.1 1.7 10-8.9-4.7-8.9 4.7 1.7-10-7.3-7.1 10-1.4L24 10Z" stroke="url(#grad-metric-star)" stroke-width="3" stroke-linejoin="round" />
-                                </svg>
-                            </span>
+                        <div class="hero-metric">
                             <strong>4.9★</strong>
-                            <span>Valoración promedio de alumnos gracias a la experiencia visual premium.</span>
+                            <span>Satisfacción de alumnos</span>
+                            <p>Experiencia white-label con rutinas interactivas, retos gamificados y notificaciones elegantes.</p>
+                        </div>
+                        <div class="hero-metric">
+                            <strong>32%</strong>
+                            <span>Upsells cerrados</span>
+                            <p>Campañas segmentadas disparan upgrades a planes premium con seguimiento automático.</p>
                         </div>
                     </div>
                 </div>
-                <div class="hero-media reveal" data-animate="slide-left" id="demo">
+                <div class="hero-media glass-card reveal" data-animate="slide-left" id="demo">
                     <div class="hero-preview" id="heroPreview">
                         <span style="color: rgba(148,163,184,0.8); font-size:0.9rem; text-align:center; padding:1.5rem;">Sube una captura de tu app o deja que mostremos la demo.</span>
                     </div>
@@ -1190,7 +1543,7 @@
                         Arrastra y suelta o selecciona una imagen para personalizar tu hero.
                     </label>
                     <input type="file" id="heroUpload" accept="image/*" hidden data-target="heroPreview" />
-                    <div class="strip">
+                    <div class="strip glass-card">
                         <div>
                             <strong>Confían en FitTrack Pro</strong>
                             <p>Programas online, estudios boutique y coaches híbridos en más de 9 países.</p>
@@ -1202,6 +1555,39 @@
                             <img src="https://dummyimage.com/200x80/0f172a/a855f7&text=Strong+DNA" alt="Strong DNA" />
                         </div>
                     </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="insights reveal" data-animate="slide-up">
+            <div class="insights-wrapper glass-card">
+                <div class="insights-header">
+                    <span class="eyebrow">Datos accionables</span>
+                    <h2>Observa la <span class="text-aurora">tracción en tiempo real</span> y ajusta antes que la competencia.</h2>
+                    <p class="animated-paragraph">Mapeamos la captación, la entrega y la monetización en una vista unificada. <span class="text-shimmer">Detecta cuellos de botella</span> y lanza campañas proactivas sin salir de FitTrack Pro.</p>
+                </div>
+                <div class="insights-grid">
+                    <article class="insight-card">
+                        <span>Clientes activos</span>
+                        <strong>1.482</strong>
+                        <p>Segmentados por objetivo, cada alumno recibe recordatorios automáticos y actualizaciones personalizadas.</p>
+                    </article>
+                    <article class="insight-card">
+                        <span>MRR proyectado</span>
+                        <strong>US$ 86.240</strong>
+                        <div class="trend-line" aria-hidden="true"></div>
+                        <p>Forecast mensual tomando en cuenta upsells, cancelaciones y recompra de challenges.</p>
+                    </article>
+                    <article class="insight-card">
+                        <span>Conversión demo → pago</span>
+                        <strong>8,4%</strong>
+                        <p>Automatizaciones de nurturing y propuestas interactivas elevan la tasa promedio x2,1.</p>
+                    </article>
+                    <article class="insight-card">
+                        <span>Programas completados</span>
+                        <strong>92%</strong>
+                        <p>Gamificación, check-ins con IA y recompensas visuales mantienen la motivación al máximo.</p>
+                    </article>
                 </div>
             </div>
         </section>
@@ -1224,14 +1610,14 @@
                             <circle cx="18" cy="25" r="2.2" fill="url(#grad-ecosystem)" />
                         </svg>
                     </span>
-                    <h2>Un ecosistema visual que vende, acompaña y fideliza.</h2>
+                    <h2>Un <span class="text-aurora">ecosistema visual</span> que vende, acompaña y fideliza.</h2>
                 </div>
                 <p>
                     Cada módulo está diseñado para enamorar a tus leads, simplificar tus operaciones y convertir la información en decisiones. Desde dashboards dinámicos hasta contenido interactivo, FitTrack Pro es la vitrina perfecta de tu expertise.
                 </p>
             </div>
             <div class="features-grid">
-                <article class="feature-card reveal" data-animate="slide-right">
+                <article class="feature-card glass-card reveal" data-animate="slide-right">
                     <span class="card-icon" aria-hidden="true">
                         <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <defs>
@@ -1253,7 +1639,7 @@
                     <p>Presenta tu método, logros y promesa de transformación con video, mockups y microanimaciones que enamoran a la primera visita.</p>
                     <p><strong>Ideal para:</strong> Funnels, campañas ads, webinars de captación.</p>
                 </article>
-                <article class="feature-card reveal" data-animate="slide-up">
+                <article class="feature-card glass-card reveal" data-animate="slide-up">
                     <span class="card-icon" aria-hidden="true">
                         <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <defs>
@@ -1271,7 +1657,7 @@
                     <h3>Comidas, hábitos y biometría en vivo.</h3>
                     <p>Planifica y controla macros, adherencia y evolución con gráficas automáticas. Tus asesorados reciben alertas y recomendaciones en tiempo real.</p>
                 </article>
-                <article class="feature-card reveal" data-animate="slide-left">
+                <article class="feature-card glass-card reveal" data-animate="slide-left">
                     <span class="card-icon" aria-hidden="true">
                         <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <defs>
@@ -1291,7 +1677,7 @@
                     <h3>Biblioteca modular con rutinas testadas.</h3>
                     <p>Duplica, adapta y lanza rutinas firmadas por tu marca en segundos. Incluye video, tempo, progresiones y feedback.</p>
                 </article>
-                <article class="feature-card reveal" data-animate="slide-up">
+                <article class="feature-card glass-card reveal" data-animate="slide-up">
                     <span class="card-icon" aria-hidden="true">
                         <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <defs>
@@ -1313,7 +1699,7 @@
             </div>
         </section>
 
-        <section id="seguimiento" class="showcase reveal" data-animate="slide-right">
+        <section id="seguimiento" class="showcase glass-card reveal" data-animate="slide-right">
             <div class="section-header">
                 <span class="eyebrow">Seguimiento total</span>
                 <div class="section-title">
@@ -1338,7 +1724,7 @@
                 </p>
             </div>
             <div class="media-row">
-                <div class="media-card reveal" data-animate="slide-up">
+                <div class="media-card glass-card reveal" data-animate="slide-up">
                     <img src="https://dummyimage.com/600x380/0f172a/22d3ee&text=Dashboard+Comidas" alt="Dashboard comidas" id="seguimientoImg" />
                     <div class="content">
                         <span class="card-icon" aria-hidden="true">
@@ -1361,7 +1747,7 @@
                         <input type="file" id="seguimientoUpload" accept="image/*" hidden data-target="seguimientoImg" />
                     </div>
                 </div>
-                <div class="media-card reveal" data-animate="slide-up">
+                <div class="media-card glass-card reveal" data-animate="slide-up">
                     <img src="https://dummyimage.com/600x380/0f172a/34d399&text=Rutinas+Personalizadas" alt="Rutinas personalizadas" id="rutinasImg" />
                     <div class="content">
                         <span class="card-icon" aria-hidden="true">
@@ -1385,7 +1771,7 @@
                         <input type="file" id="rutinasUpload" accept="image/*" hidden data-target="rutinasImg" />
                     </div>
                 </div>
-                <div class="media-card reveal" data-animate="slide-up">
+                <div class="media-card glass-card reveal" data-animate="slide-up">
                     <img src="https://dummyimage.com/600x380/0f172a/fbbf24&text=Coach+View" alt="Coach view" id="coachImg" />
                     <div class="content">
                         <span class="card-icon" aria-hidden="true">
@@ -1432,11 +1818,11 @@
                             <path d="M26 26h8" stroke="url(#grad-modulos)" stroke-width="3" stroke-linecap="round" />
                         </svg>
                     </span>
-                    <h2>Todo lo que necesitas para vender, guiar y escalar.</h2>
+                    <h2><span class="text-aurora">Todo lo que necesitas</span> para vender, guiar y escalar.</h2>
                 </div>
             </div>
             <div class="modules-grid">
-                <article class="module-card reveal" data-animate="slide-up">
+                <article class="module-card glass-card reveal" data-animate="slide-up">
                     <span class="card-icon" aria-hidden="true">
                         <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <defs>
@@ -1452,7 +1838,7 @@
                     <strong>Embudo de ventas visual</strong>
                     <p>Landing, quiz nutricional, automatizaciones y segmentación de leads por objetivo.</p>
                 </article>
-                <article class="module-card reveal" data-animate="slide-up">
+                <article class="module-card glass-card reveal" data-animate="slide-up">
                     <span class="card-icon" aria-hidden="true">
                         <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <defs>
@@ -1469,7 +1855,7 @@
                     <strong>Onboarding gamificado</strong>
                     <p>Bienvenida con micro-videos, seguimiento de hábitos y tareas desbloqueables.</p>
                 </article>
-                <article class="module-card reveal" data-animate="slide-up">
+                <article class="module-card glass-card reveal" data-animate="slide-up">
                     <span class="card-icon" aria-hidden="true">
                         <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <defs>
@@ -1487,7 +1873,7 @@
                     <strong>Biblioteca multimedia</strong>
                     <p>Rutinas, recetas, lives y challenges con branding. Subidas en lote, ready para compartir.</p>
                 </article>
-                <article class="module-card reveal" data-animate="slide-up">
+                <article class="module-card glass-card reveal" data-animate="slide-up">
                     <span class="card-icon" aria-hidden="true">
                         <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <defs>
@@ -1505,7 +1891,7 @@
                     <strong>Panel de asesorados</strong>
                     <p>Historial clínico, contratos, progresión fotográfica y badges por logros.</p>
                 </article>
-                <article class="module-card reveal" data-animate="slide-up">
+                <article class="module-card glass-card reveal" data-animate="slide-up">
                     <span class="card-icon" aria-hidden="true">
                         <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <defs>
@@ -1525,7 +1911,7 @@
                     <strong>Marketing automatizado</strong>
                     <p>Secuencias por WhatsApp, retargeting, recordatorios de pagos y scripts de ventas.</p>
                 </article>
-                <article class="module-card reveal" data-animate="slide-up">
+                <article class="module-card glass-card reveal" data-animate="slide-up">
                     <span class="card-icon" aria-hidden="true">
                         <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <defs>
@@ -1667,7 +2053,7 @@
                 </div>
             </div>
             <div class="pricing-grid" id="planes">
-                <article class="pricing-card reveal" data-animate="slide-right">
+                <article class="pricing-card glass-card reveal" data-animate="slide-right">
                     <span class="card-icon" aria-hidden="true">
                         <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <defs>
@@ -1692,7 +2078,7 @@
                     </ul>
                     <button class="btn-secondary" data-scroll="#cta">Solicitar demo</button>
                 </article>
-                <article class="pricing-card reveal" data-animate="zoom-in">
+                <article class="pricing-card glass-card reveal" data-animate="zoom-in">
                     <span class="card-icon" aria-hidden="true">
                         <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <defs>
@@ -1717,7 +2103,7 @@
                     </ul>
                     <button class="btn-primary" data-scroll="#cta">Habla con un experto</button>
                 </article>
-                <article class="pricing-card reveal" data-animate="slide-left">
+                <article class="pricing-card glass-card reveal" data-animate="slide-left">
                     <span class="card-icon" aria-hidden="true">
                         <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <defs>
@@ -1768,7 +2154,7 @@
                 </div>
             </div>
             <div class="testimonials">
-                <article class="testimonial reveal" data-animate="slide-up">
+                <article class="testimonial glass-card reveal" data-animate="slide-up">
                     <span class="card-icon" aria-hidden="true">
                         <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <defs>
@@ -1785,7 +2171,7 @@
                     <strong>Andrea Costa — Head Coach, Studio Elevate</strong>
                     <span>+168 alumnos activos • Crecimiento 3.2x en ventas trimestrales</span>
                 </article>
-                <article class="testimonial reveal" data-animate="slide-up">
+                <article class="testimonial glass-card reveal" data-animate="slide-up">
                     <span class="card-icon" aria-hidden="true">
                         <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <defs>
@@ -1802,7 +2188,7 @@
                     <strong>Felipe Matos — CEO, PerformLab</strong>
                     <span>ROI 6.5x en 8 meses • 40% más tickets high-end</span>
                 </article>
-                <article class="testimonial reveal" data-animate="slide-up">
+                <article class="testimonial glass-card reveal" data-animate="slide-up">
                     <span class="card-icon" aria-hidden="true">
                         <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <defs>
@@ -1945,7 +2331,7 @@
                 </div>
             </div>
             <div class="media-row">
-                <div class="media-card reveal" data-animate="slide-up">
+                <div class="media-card glass-card reveal" data-animate="slide-up">
                     <img src="https://dummyimage.com/600x380/0f172a/a855f7&text=Equipo+Coach" alt="Equipo coach" id="galeria1" />
                     <div class="content">
                         <span class="card-icon" aria-hidden="true">
@@ -1969,7 +2355,7 @@
                         <input type="file" id="galeriaUpload1" accept="image/*" hidden data-target="galeria1" />
                     </div>
                 </div>
-                <div class="media-card reveal" data-animate="slide-up">
+                <div class="media-card glass-card reveal" data-animate="slide-up">
                     <img src="https://dummyimage.com/600x380/0f172a/22d3ee&text=Recetas+Fit" alt="Recetas fit" id="galeria2" />
                     <div class="content">
                         <span class="card-icon" aria-hidden="true">
@@ -1993,7 +2379,7 @@
                         <input type="file" id="galeriaUpload2" accept="image/*" hidden data-target="galeria2" />
                     </div>
                 </div>
-                <div class="media-card reveal" data-animate="slide-up">
+                <div class="media-card glass-card reveal" data-animate="slide-up">
                     <img src="https://dummyimage.com/600x380/0f172a/34d399&text=Comunidad+Activa" alt="Comunidad activa" id="galeria3" />
                     <div class="content">
                         <span class="card-icon" aria-hidden="true">
@@ -2042,7 +2428,7 @@
                 </div>
             </div>
             <div class="faq-grid">
-                <article class="faq-item">
+                <article class="faq-item glass-card">
                     <div class="faq-question">
                         <span class="card-icon" aria-hidden="true">
                             <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -2063,7 +2449,7 @@
                         <p>En promedio 14 días con soporte asistido. Si traes activos listos (logos, colores, rutinas) puedes lanzar en menos de una semana.</p>
                     </div>
                 </article>
-                <article class="faq-item">
+                <article class="faq-item glass-card">
                     <div class="faq-question">
                         <span class="card-icon" aria-hidden="true">
                             <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -2085,7 +2471,7 @@
                         <p>Sí. Importamos asesorados, rutinas, recetas y contratos desde hojas de cálculo u otras apps. Incluye auditoría de calidad.</p>
                     </div>
                 </article>
-                <article class="faq-item">
+                <article class="faq-item glass-card">
                     <div class="faq-question">
                         <span class="card-icon" aria-hidden="true">
                             <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -2107,7 +2493,7 @@
                         <p>Cada coach obtiene panel propio con asignaciones, KPI y automatizaciones. Gestiona permisos y comisiones desde un solo lugar.</p>
                     </div>
                 </article>
-                <article class="faq-item">
+                <article class="faq-item glass-card">
                     <div class="faq-question">
                         <span class="card-icon" aria-hidden="true">
                             <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -2132,7 +2518,9 @@
             </div>
         </section>
 
-        <section class="cta-block reveal" data-animate="zoom-in" id="cta">
+        <section class="cta-block glass-card reveal" data-animate="zoom-in" id="cta">
+            <span class="cta-orb cta-orb--one" aria-hidden="true"></span>
+            <span class="cta-orb cta-orb--two" aria-hidden="true"></span>
             <div class="section-title" style="justify-content:center;">
                 <span class="icon-badge" aria-hidden="true">
                     <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -2148,7 +2536,7 @@
                         <circle cx="24" cy="16" r="3.5" fill="url(#grad-cta)" />
                     </svg>
                 </span>
-                <h2>Listo para construir la mejor experiencia digital de tu marca?</h2>
+                <h2>Listo para construir la <span class="text-aurora">mejor experiencia digital</span> de tu marca?</h2>
             </div>
             <p>
                 Agenda una demo personalizada y te mostramos cómo adaptar FitTrack Pro a tu modelo de negocio en menos de 30 minutos.
@@ -2184,15 +2572,64 @@
 
     <script>
         const scrollButtons = document.querySelectorAll('[data-scroll]');
+        const headerEl = document.querySelector('header');
+        const rootStyle = document.documentElement;
+        let lastScrollY = window.scrollY;
+        let isTicking = false;
+
+        const updateDynamicBackground = scrollY => {
+            const docHeight = document.body.scrollHeight - window.innerHeight;
+            const progress = docHeight > 0 ? Math.min(scrollY / docHeight, 1) : 0;
+            const wave = progress * Math.PI * 2;
+            const huePrimary = 212 + Math.sin(wave) * 26;
+            const hueSecondary = 264 + Math.cos(wave * 0.85) * 32;
+            const hueTertiary = 308 + Math.sin(wave * 1.1 + Math.PI / 3) * 40;
+            rootStyle.style.setProperty('--bg-color-1', `hsla(${huePrimary.toFixed(1)}, 86%, 18%, 0.92)`);
+            rootStyle.style.setProperty('--bg-color-2', `hsla(${hueSecondary.toFixed(1)}, 82%, 20%, 0.9)`);
+            rootStyle.style.setProperty('--bg-color-3', `hsla(${hueTertiary.toFixed(1)}, 88%, 22%, 0.85)`);
+            const shiftX = ((Math.sin(wave) + 1) / 2 - 0.5) * 160;
+            const shiftY = ((Math.cos(wave * 0.8) + 1) / 2 - 0.5) * 120;
+            rootStyle.style.setProperty('--bg-shift-x', `${shiftX.toFixed(1)}px`);
+            rootStyle.style.setProperty('--bg-shift-y', `${shiftY.toFixed(1)}px`);
+        };
+
+        const handleScrollEffects = () => {
+            const currentY = window.scrollY;
+            if (headerEl) {
+                const beyondThreshold = currentY > 80;
+                headerEl.classList.toggle('is-compact', beyondThreshold);
+                if (currentY > lastScrollY + 6 && currentY > 140) {
+                    headerEl.classList.add('is-hidden');
+                } else if (currentY < lastScrollY - 6 || currentY <= 140) {
+                    headerEl.classList.remove('is-hidden');
+                }
+            }
+            updateDynamicBackground(currentY);
+            lastScrollY = currentY;
+            isTicking = false;
+        };
+
+        window.addEventListener('scroll', () => {
+            if (!isTicking) {
+                isTicking = true;
+                window.requestAnimationFrame(handleScrollEffects);
+            }
+        }, { passive: true });
+
+        window.addEventListener('resize', () => updateDynamicBackground(window.scrollY));
+
         scrollButtons.forEach(btn => {
             btn.addEventListener('click', event => {
                 const target = document.querySelector(btn.getAttribute('data-scroll'));
                 if (target) {
                     event.preventDefault();
+                    headerEl?.classList.remove('is-hidden');
                     target.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
             });
         });
+
+        handleScrollEffects();
 
         document.getElementById('year').textContent = new Date().getFullYear();
 
