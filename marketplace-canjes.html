@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Marketplace de Canjes</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --primary: #3a48f5;
+      --secondary: #ff7a59;
+      --bg: #f8f9fb;
+      --bg-dark: #0f172a;
+      --text: #1f2937;
+      --text-dark: #f9fafb;
+      --border: rgba(148, 163, 184, 0.4);
+      --radius: 16px;
+      --transition: 200ms ease;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+      background: linear-gradient(135deg, rgba(58, 72, 245, 0.08), rgba(255, 122, 89, 0.12));
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      backdrop-filter: blur(12px);
+      background: rgba(15, 23, 42, 0.82);
+      color: var(--text-dark);
+      padding: 1.5rem clamp(1rem, 4vw, 3rem);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 20px 45px rgba(15, 23, 42, 0.25);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    header h1 {
+      font-size: clamp(1.5rem, 2.5vw, 2.5rem);
+      margin: 0;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+
+    header .conos {
+      font-size: 1rem;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 0.6rem 1rem;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    header .conos span {
+      background: rgba(255, 255, 255, 0.18);
+      padding: 0.3rem 0.75rem;
+      border-radius: 999px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+
+    main {
+      flex: 1;
+      width: min(1200px, 92vw);
+      margin: 2.5rem auto 4rem;
+      display: grid;
+      gap: 2.5rem;
+    }
+
+    section {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(10px);
+      border-radius: var(--radius);
+      padding: clamp(1.25rem, 2vw, 2rem);
+      border: 1px solid var(--border);
+      box-shadow: 0 20px 30px -20px rgba(15, 23, 42, 0.4);
+    }
+
+    h2 {
+      margin-top: 0;
+      font-size: 1.4rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .section-header p {
+      margin: 0;
+      color: rgba(15, 23, 42, 0.65);
+      font-size: 0.95rem;
+    }
+
+    form {
+      display: grid;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    label {
+      display: grid;
+      gap: 0.35rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: rgba(15, 23, 42, 0.85);
+    }
+
+    input,
+    textarea,
+    select {
+      border-radius: 12px;
+      border: 1px solid rgba(15, 23, 42, 0.12);
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: box-shadow var(--transition), border-color var(--transition);
+      background: rgba(255, 255, 255, 0.85);
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      outline: none;
+      border-color: rgba(58, 72, 245, 0.5);
+      box-shadow: 0 0 0 4px rgba(58, 72, 245, 0.1);
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 0.85rem 1.4rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      color: white;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      box-shadow: 0 20px 35px -18px rgba(58, 72, 245, 0.7);
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 28px 45px -18px rgba(58, 72, 245, 0.5);
+    }
+
+    button.secondary {
+      background: rgba(58, 72, 245, 0.12);
+      color: var(--primary);
+      box-shadow: none;
+    }
+
+    .grid {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .grid.products {
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: var(--radius);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      padding: 1.25rem;
+      display: grid;
+      gap: 0.75rem;
+      position: relative;
+      min-height: 200px;
+    }
+
+    .card h3 {
+      margin: 0;
+      font-size: 1.2rem;
+    }
+
+    .card .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 600;
+      background: rgba(58, 72, 245, 0.15);
+      color: var(--primary);
+      width: fit-content;
+    }
+
+    .card footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-top: auto;
+      gap: 1rem;
+    }
+
+    .card footer p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: rgba(15, 23, 42, 0.6);
+    }
+
+    .offers {
+      display: grid;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .offer {
+      background: rgba(15, 23, 42, 0.85);
+      color: var(--text-dark);
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      display: grid;
+      gap: 0.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .offer header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      background: none;
+      padding: 0;
+      box-shadow: none;
+      position: static;
+    }
+
+    .offer-actions {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1.5rem;
+      color: rgba(15, 23, 42, 0.55);
+      border: 2px dashed rgba(148, 163, 184, 0.3);
+      border-radius: var(--radius);
+    }
+
+    .empty-state strong {
+      color: rgba(15, 23, 42, 0.85);
+    }
+
+    @media (max-width: 720px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+
+      header .conos {
+        align-self: stretch;
+        justify-content: space-between;
+      }
+
+      .card footer {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .offer-actions {
+        width: 100%;
+      }
+
+      .offer-actions button {
+        flex: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>ConoSwap · Marketplace de Canjes</h1>
+    <div class="conos" aria-live="polite">
+      Conos disponibles:
+      <span id="conos">0</span>
+    </div>
+  </header>
+
+  <main>
+    <section id="publicar">
+      <div class="section-header">
+        <h2>Publicar producto</h2>
+        <p>Comparte lo que quieres intercambiar y empieza a recibir ofertas.</p>
+      </div>
+      <form id="publicar-form">
+        <label>
+          Nombre del producto
+          <input type="text" name="nombre" placeholder="Ej. Bicicleta urbana" required />
+        </label>
+        <label>
+          Descripción
+          <textarea name="descripcion" placeholder="Cuenta detalles, estado y accesorios incluidos" required></textarea>
+        </label>
+        <label>
+          Valor estimado en conos
+          <input type="number" name="valor" min="0" step="10" placeholder="Ej. 500" required />
+        </label>
+        <button type="submit">Publicar producto</button>
+      </form>
+    </section>
+
+    <section id="catalogo">
+      <div class="section-header">
+        <h2>Productos publicados</h2>
+        <p>Explora los artículos disponibles y envía tu propuesta de canje.</p>
+      </div>
+      <div id="productos" class="grid products" aria-live="polite"></div>
+    </section>
+
+    <section id="ofertas">
+      <div class="section-header">
+        <h2>Ofertas recibidas</h2>
+        <p>Gestiona las propuestas y confirma los canjes.</p>
+      </div>
+      <div id="lista-ofertas" class="offers" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <template id="producto-template">
+    <article class="card producto">
+      <span class="tag">Publicado</span>
+      <h3></h3>
+      <p class="descripcion"></p>
+      <footer>
+        <p class="valor"></p>
+        <button class="secondary crear-oferta" type="button">Ofertar</button>
+      </footer>
+    </article>
+  </template>
+
+  <template id="oferta-template">
+    <article class="offer">
+      <header>
+        <h3></h3>
+        <span class="estado"></span>
+      </header>
+      <p class="detalle"></p>
+      <p class="diferencia"></p>
+      <div class="offer-actions"></div>
+    </article>
+  </template>
+
+  <dialog id="oferta-dialog">
+    <form method="dialog" id="oferta-form">
+      <h2>Crear oferta de canje</h2>
+      <p id="producto-seleccionado"></p>
+      <label>
+        Tu producto
+        <input type="text" name="nombreOferta" placeholder="Ej. Patineta eléctrica" required />
+      </label>
+      <label>
+        Descripción de tu producto
+        <textarea name="descripcionOferta" placeholder="Incluye estado, accesorios y detalles" required></textarea>
+      </label>
+      <label>
+        Valor estimado en conos
+        <input type="number" name="valorOferta" min="0" step="10" placeholder="Ej. 450" required />
+      </label>
+      <menu>
+        <button value="cancelar" class="secondary" type="button">Cancelar</button>
+        <button value="confirmar">Enviar oferta</button>
+      </menu>
+    </form>
+  </dialog>
+
+  <script>
+    const productos = [
+      {
+        id: crypto.randomUUID(),
+        nombre: "Cámara mirrorless Alpha Z1",
+        descripcion: "Incluye lente 24-70mm, 2 baterías y estuche rígido. Usada en excelentes condiciones.",
+        valor: 900,
+      },
+      {
+        id: crypto.randomUUID(),
+        nombre: "Colección de vinilos clásicos",
+        descripcion: "Más de 40 discos de rock y jazz. Ediciones originales con fundas plásticas protectoras.",
+        valor: 350,
+      },
+      {
+        id: crypto.randomUUID(),
+        nombre: "iPad Pro 11'' + Apple Pencil",
+        descripcion: "256GB, Wi-Fi, incluye funda magnética y vidrio templado.",
+        valor: 780,
+      },
+    ];
+
+    const ofertas = [];
+    let conos = 0;
+    let productoSeleccionado = null;
+
+    const contenedorProductos = document.getElementById("productos");
+    const contenedorOfertas = document.getElementById("lista-ofertas");
+    const templateProducto = document.getElementById("producto-template");
+    const templateOferta = document.getElementById("oferta-template");
+    const dialogoOferta = document.getElementById("oferta-dialog");
+    const formOferta = document.getElementById("oferta-form");
+    const formPublicar = document.getElementById("publicar-form");
+    const conosElemento = document.getElementById("conos");
+    const productoSeleccionadoLabel = document.getElementById("producto-seleccionado");
+    const botonCancelarOferta = formOferta.querySelector("button[value='cancelar']");
+
+    function actualizarConos() {
+      conosElemento.textContent = `${conos.toLocaleString()} conos`;
+    }
+
+    function renderProductos() {
+      contenedorProductos.innerHTML = "";
+
+      if (!productos.length) {
+        contenedorProductos.innerHTML = `
+          <div class="empty-state">
+            <strong>Aún no hay publicaciones.</strong><br />
+            Sé la primera persona en publicar un producto para iniciar un canje.
+          </div>`;
+        return;
+      }
+
+      productos.forEach((producto) => {
+        const nodo = templateProducto.content.cloneNode(true);
+        nodo.querySelector("h3").textContent = producto.nombre;
+        nodo.querySelector(".descripcion").textContent = producto.descripcion;
+        nodo.querySelector(".valor").textContent = `Valor estimado: ${producto.valor.toLocaleString()} conos`;
+
+        const boton = nodo.querySelector(".crear-oferta");
+        boton.addEventListener("click", () => abrirDialogoOferta(producto.id));
+
+        contenedorProductos.appendChild(nodo);
+      });
+    }
+
+    function renderOfertas() {
+      contenedorOfertas.innerHTML = "";
+
+      if (!ofertas.length) {
+        contenedorOfertas.innerHTML = `
+          <div class="empty-state">
+            <strong>No hay ofertas por ahora.</strong><br />
+            Cuando recibas propuestas aparecerán aquí.
+          </div>`;
+        return;
+      }
+
+      ofertas.forEach((oferta) => {
+        const nodo = templateOferta.content.cloneNode(true);
+        nodo.querySelector("h3").textContent = oferta.producto.nombre;
+        nodo.querySelector(".estado").textContent = oferta.estado;
+        nodo.querySelector(".detalle").textContent = `${oferta.nombreOferta} · ${oferta.descripcionOferta}`;
+
+        const diferencia = oferta.valorOferta - oferta.producto.valor;
+        const textoDiferencia =
+          diferencia === 0
+            ? "El intercambio es equivalente."
+            : diferencia > 0
+            ? `Recibirás ${Math.abs(diferencia).toLocaleString()} conos adicionales.`
+            : `Deberás pagar ${Math.abs(diferencia).toLocaleString()} conos para completar el canje.`;
+        nodo.querySelector(".diferencia").textContent = textoDiferencia;
+
+        const acciones = nodo.querySelector(".offer-actions");
+
+        if (oferta.estado === "Pendiente") {
+          const btnAceptar = document.createElement("button");
+          btnAceptar.textContent = "Aceptar canje";
+          btnAceptar.addEventListener("click", () => aceptarOferta(oferta.id));
+
+          const btnRechazar = document.createElement("button");
+          btnRechazar.textContent = "Rechazar";
+          btnRechazar.classList.add("secondary");
+          btnRechazar.addEventListener("click", () => actualizarEstadoOferta(oferta.id, "Rechazada"));
+
+          acciones.append(btnAceptar, btnRechazar);
+        } else {
+          const badge = document.createElement("span");
+          badge.className = "tag";
+          badge.textContent = oferta.estado;
+          acciones.append(badge);
+        }
+
+        contenedorOfertas.appendChild(nodo);
+      });
+    }
+
+    function abrirDialogoOferta(productoId) {
+      const producto = productos.find((item) => item.id === productoId);
+      productoSeleccionado = producto;
+      productoSeleccionadoLabel.textContent = `Estás ofertando por: ${producto.nombre} (${producto.valor.toLocaleString()} conos)`;
+      formOferta.reset();
+      dialogoOferta.showModal();
+    }
+
+    function crearOferta(datos) {
+      const oferta = {
+        id: crypto.randomUUID(),
+        producto: productoSeleccionado,
+        nombreOferta: datos.get("nombreOferta"),
+        descripcionOferta: datos.get("descripcionOferta"),
+        valorOferta: Number(datos.get("valorOferta")),
+        estado: "Pendiente",
+      };
+
+      ofertas.unshift(oferta);
+      renderOfertas();
+    }
+
+    function actualizarEstadoOferta(id, estado) {
+      const oferta = ofertas.find((item) => item.id === id);
+      if (!oferta) return;
+      oferta.estado = estado;
+      renderOfertas();
+    }
+
+    function aceptarOferta(id) {
+      const oferta = ofertas.find((item) => item.id === id);
+      if (!oferta) return;
+
+      const diferencia = oferta.valorOferta - oferta.producto.valor;
+      conos += diferencia;
+      actualizarConos();
+      actualizarEstadoOferta(id, "Canje completado");
+    }
+
+    formOferta.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      const datos = new FormData(formOferta);
+      crearOferta(datos);
+      dialogoOferta.close("confirmar");
+    });
+
+    botonCancelarOferta.addEventListener("click", () => {
+      dialogoOferta.close("cancelar");
+    });
+
+    formOferta.addEventListener("close", () => {
+      formOferta.reset();
+    });
+
+    dialogoOferta.addEventListener("cancel", (event) => {
+      event.preventDefault();
+      dialogoOferta.close("cancelar");
+    });
+
+    formPublicar.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const datos = new FormData(formPublicar);
+
+      const nuevoProducto = {
+        id: crypto.randomUUID(),
+        nombre: datos.get("nombre"),
+        descripcion: datos.get("descripcion"),
+        valor: Number(datos.get("valor")),
+      };
+
+      productos.unshift(nuevoProducto);
+      formPublicar.reset();
+      renderProductos();
+    });
+
+    renderProductos();
+    renderOfertas();
+    actualizarConos();
+  </script>
+</body>
+</html>
